@@ -21,26 +21,22 @@ export const UsersResolvedByFilterQuery = (
   res: Response,
   next: NextFunction
 ) => {
-  const { filter, value } = req.query as { filter: string; value: string };
-  // when filter and value are undefined it'll return all users if both are then it returns the filtered users and their values
-  if (!filter && !value) {
-    res.json(mockUsers).status(200);
-  } else {
-    res.json(
-      mockUsers.filter((user) => {
-        const filterType = filter as keyof typeof user;
-        // if filter type is username then it'll return the filtered users and their values and if it's displayName then it'll return the filtered users and their displayNames and if it's a number then it'll return the filtered users and their ids
-        if (
-          filterType === "username" ||
-          filterType === "displayName" ||
-          filterType === "id"
-        ) {
-          const returnedUser = user[filterType].toString().includes(value);
-          return returnedUser;
-        }
-      })
-    );
+  const { username, displayName } = req.query as {
+    username: string;
+    displayName: string;
+  };
+// if both username or displayName are provided, filter the users by username and displayName
+  if (username || displayName) {
+    const filteredUsers = mockUsers.filter((user) => {
+      return user.username === username || user.displayName === displayName;
+    });
+    req.user = filteredUsers;
+    return next();
   }
-
+  //if neither username nor displayName is provided, return all users
+  if (!username || !displayName) {
+    return res.status(400).send("Username and DisplayName are required");
+  }
+  
   next();
 };
