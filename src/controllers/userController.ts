@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
-import { mockUsers } from "../data/mockUsers"; // Ensure this path is correct
+import { Request, Response, NextFunction } from "express";
+import { mockUsers } from "../data/mockUsers";
 import User from "../interfaces/User";
+import { validationResult } from 'express-validator';
 
 // @desc Get Homepage
 // @route GET /
@@ -19,7 +20,7 @@ export function getAll(req: Request, res: Response) {
 // @desc Get a user by id
 // @route GET /api/users/:id
 // @access Public
-export function getUserById(req: Request, res: Response) {
+export function getUserById(req: Request, res: Response, next: NextFunction) {
   if (req.user) {
     res.json(req.user);
   } else {

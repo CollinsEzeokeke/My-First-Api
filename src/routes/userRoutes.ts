@@ -9,7 +9,7 @@ import  {
     searchUser,
     updateUserByField,
 }  from '../controllers/userController';
-import { UsersResolvedById, UsersResolvedByFilterQuery } from '../middleware/resolveUsers';
+import { UsersResolvedById, UsersResolvedByFilterQuery, validator } from '../middleware/resolveUsers';
 
 export const router = express.Router();
 
@@ -17,11 +17,6 @@ export const router = express.Router();
 // @route GET /
 // @access Public
 router.get('/', getHome);
-
-// @desc Get all users
-// @route GET /api/users
-// @access Public
-router.get('/api/users', getAll);
 
 // @desc Get a user by id
 // @route GET /api/users/:id
@@ -31,7 +26,7 @@ router.get('/api/users/:id', UsersResolvedById, getUserById);
 // @desc searching for a user with a specific filter and value
 // @route GET /api/users
 // @access Public
-router.get('/api/users', UsersResolvedByFilterQuery, searchUser);
+router.get('/api/users',validator, UsersResolvedByFilterQuery, searchUser);
 
 // @desc create a new user 
 // @route POST /api/users

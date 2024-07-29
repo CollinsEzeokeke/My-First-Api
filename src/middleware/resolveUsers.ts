@@ -1,6 +1,7 @@
 /// Middleware made to resolve the mock users by id
 import { Request, Response, NextFunction } from "express";
 import { mockUsers } from "../data/mockUsers";
+import { query, validationResult } from "express-validator";
 
 export const UsersResolvedById = (
   req: Request,
@@ -21,22 +22,30 @@ export const UsersResolvedByFilterQuery = (
   res: Response,
   next: NextFunction
 ) => {
-  const { username, displayName } = req.query as {
-    username: string;
-    displayName: string;
-  };
-// if both username or displayName are provided, filter the users by username and displayName
+  const { username, displayName } = req.query;
+
   if (username || displayName) {
-    const filteredUsers = mockUsers.filter((user) => {
-      return user.username === username || user.displayName === displayName;
-    });
-    req.user = filteredUsers;
-    return next();
-  }
-  //if neither username nor displayName is provided, return all users
-  if (!username || !displayName) {
-    return res.status(400).send("Username and DisplayName are required");
+    req.user = mockUsers.filter(user => 
+      (username && user.username === username) || 
+      (displayName && user.displayName === displayName)
+    );
+  } else {
+    req.user = mockUsers;
   }
   
   next();
 };
+
+export const validator = [
+  query('username').isString().optional(true).withMessage('Username is required'),
+  query('displayName').isString().optional(true).withMessage('Display name is required'),
+  (req: Request, res: Response, next: NextFunction) => {
+    const results = validationResult(req);
+    console.log(results);
+    if (!results.isEmpty()) {
+      console.log(results.array());
+      return res.status(400).send(results.array());
+    }
+    next();
+  } 
+];
