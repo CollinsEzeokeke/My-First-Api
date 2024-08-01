@@ -1,9 +1,10 @@
-/// Middleware made to resolve the mock users by id
-import { Request, Response, NextFunction } from "express";
+// middleware.ts
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { mockUsers } from "../data/mockUsers";
-import { query, validationResult, body, matchedData, checkSchema } from "express-validator";
+import { query, validationResult, body, matchedData, checkSchema, ValidationChain } from "express-validator";
 import { validationSchema } from "../utils/validationSchema";
 
+// Middleware to resolve users by ID
 export const UsersResolvedById = (
   req: Request,
   res: Response,
@@ -18,6 +19,7 @@ export const UsersResolvedById = (
   next();
 };
 
+// Middleware to resolve users by filter query
 export const UsersResolvedByFilterQuery = (
   req: Request,
   res: Response,
@@ -38,8 +40,8 @@ export const UsersResolvedByFilterQuery = (
   next();
 };
 
-//Validation for the providing the correct data required for the query
-export const validator = [
+// Validation for the query parameters
+export const validator: RequestHandler[] = [
   query("username")
     .isString()
     .optional()
@@ -58,9 +60,9 @@ export const validator = [
   },
 ];
 
-// Validation for the users to be created
-export const validatorCreate = [
-  checkSchema(validationSchema),
+// Validation for the creation of users
+export const validatorCreate: RequestHandler[] = [
+  ...checkSchema(validationSchema),
   (req: Request, res: Response, next: NextFunction) => {
     const results = validationResult(req);
     console.log(results);
@@ -70,7 +72,7 @@ export const validatorCreate = [
         .send({ errors: results.array().map((error) => error.msg) });
     }
     const data = matchedData(req);
-    req.data = data;
+    (req as any).data = data; // Casting to any to avoid TypeScript error
     next();
   },
 ];

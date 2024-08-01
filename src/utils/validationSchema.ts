@@ -1,6 +1,9 @@
-// Validation Schema for the creation of users
-export const validationSchema = {
+// validationSchema.ts
+import { Schema } from 'express-validator';
+
+export const validationSchema: Schema = {
   username: {
+    in: ['body'],
     isString: true,
     notEmpty: {
       errorMessage: "Username should not be left empty",
@@ -14,6 +17,7 @@ export const validationSchema = {
     },
   },
   displayName: {
+    in: ['body'],
     isString: true,
     notEmpty: {
       errorMessage: "Display name should not be left empty",
