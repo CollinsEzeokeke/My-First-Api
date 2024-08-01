@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { mockUsers } from "../data/mockUsers";
-import User from "../interfaces/User";
-import { validationResult } from "express-validator";
+import { mockUsers } from "../../data/Users/mockUsers";
+import User from "../../interfaces/User/User";
 
 // @desc Get Homepage
 // @route GET /

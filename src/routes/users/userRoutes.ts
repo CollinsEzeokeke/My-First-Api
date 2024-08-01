@@ -7,15 +7,16 @@ import {
   createUser,
   searchUser,
   updateUserByField,
-} from "../controllers/userController";
+} from "../../controllers/user/userController";
 import {
   UsersResolvedById,
   UsersResolvedByFilterQuery,
   validator,
   validatorCreate,
-} from "../middleware/resolveUsers";
+  validatorId,validatorUpdate,validatorUpdateOptional
+} from "../../middleware/Users/resolveUsers";
 
-export const router = express.Router();
+const router = express.Router();
 
 // @desc Get Homepage
 // @route GET /
@@ -25,12 +26,12 @@ router.get("/", getHome);
 // @desc Get a user by id
 // @route GET /api/users/:id
 // @access Public
-router.get("/api/users/:id", UsersResolvedById, getUserById);
+router.get("/api/users/:id", validatorId, UsersResolvedById, getUserById);
 
 // @desc searching for a user with a specific filter and value
 // @route GET /api/users
 // @access Public
-router.get("/api/users", UsersResolvedByFilterQuery, validator, searchUser);
+router.get("/api/users", validator, UsersResolvedByFilterQuery, searchUser);
 
 // @desc create a new user
 // @route POST /api/users
@@ -40,14 +41,17 @@ router.post("/api/users", validatorCreate, createUser);
 // @desc update a user
 // @route PUT /api/users/:id
 // @access Public
-router.put("/api/users/:id", UsersResolvedById, updateUser);
+router.put("/api/users/:id",validatorUpdate,  UsersResolvedById, updateUser);
 
 // @desc update a user by just a field
 // @route PATCH /api/users/:id
 // @access Public
-router.patch("/api/users/:id", UsersResolvedById, updateUserByField);
+router.patch("/api/users/:id",validatorUpdateOptional,UsersResolvedById, updateUserByField);
 
 // @desc delete a user
 // @route DELETE /api/users/:id
 // @access Public
 router.delete("/api/users/:id", UsersResolvedById, deleteUser);
+
+
+export default router;

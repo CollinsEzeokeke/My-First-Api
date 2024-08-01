@@ -1,4 +1,4 @@
-import User from "../interfaces/User";
+import User from "../interfaces/User/User";
 import { ValidationError, Location } from "express-validator";
 
 declare global {
