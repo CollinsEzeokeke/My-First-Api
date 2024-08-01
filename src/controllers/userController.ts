@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { mockUsers } from "../data/mockUsers";
 import User from "../interfaces/User";
-import { validationResult } from 'express-validator';
+import { validationResult } from "express-validator";
 
 // @desc Get Homepage
 // @route GET /
@@ -45,12 +45,8 @@ export function createUser(req: Request, res: Response) {
   if (!username || !displayName) {
     return res.status(400).send("Username and DisplayName are required");
   }
-
-  const newUser = {
-    id: mockUsers.length + 1,
-    username: username,
-    displayName: displayName,
-  };
+  const varianle = req.data;
+  const newUser = { id: mockUsers[mockUsers.length - 1].id + 1, ...varianle };
 
   mockUsers.push(newUser);
   res.status(201).json(newUser);
