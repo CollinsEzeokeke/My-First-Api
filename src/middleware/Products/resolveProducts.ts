@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { mockProducts } from "../../data/Products/mockProducts";
-import { checkSchema, validationResult } from "express-validator";
+import { checkSchema, matchedData, validationResult } from "express-validator";
 import {
   createProductValidationSchema,
   productBodyValidationSchema,
@@ -65,13 +65,11 @@ export const makeAnUpdate = (
   next: NextFunction
 ) => {
   const product = req.product as Product;
-  const newProduct = req.body as Product;
-  console.log(newProduct, product);
   if (!product) {
     res.json({ message: "No product found with that id" }).status(404);
   }
-  mockProducts.push(newProduct);
-  req.product = newProduct;
+  mockProducts.push(req.data);
+  req.product = req.data;
   next();
 };
 
@@ -82,18 +80,17 @@ export const updateProductContent = (
   next: NextFunction
 ) => {
   const product = req.product as Product;
-  const newProduct = req.body as Product;
   console.log(newProduct, product);
   if (!product) {
     res.json({ message: "No product found with that id" }).status(404);
   }
-  mockProducts.push(newProduct);
-  req.product = newProduct;
+  mockProducts.push(req.data);
+  req.product = req.data;
   next();
 };
 
 // resolving the created products
-export const createProduct = (
+export const newProduct = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -103,7 +100,7 @@ if (!name || !category || !price || !description || !image) {
   res.json({ message: "Please provide all the required fields" }).status(400);
 }
 const variable = req.data;
-const newProduct = { id: mockProducts[mockProducts.length - 1].id + 1, ...variable };
+const newProduct = { id: mockProducts[mockProducts.length - 1].id + 1, ...variable };  
 mockProducts.push(newProduct);
 req.product = newProduct;
 next();
@@ -148,6 +145,8 @@ export const validatorCreateProduct: RequestHandler[] = [
         .status(400)
         .send({ errors: results.array().map((error) => error.msg) });
     }
+    const data = matchedData(req);
+    req.data = data;
     next();
   },
 ];
@@ -162,6 +161,8 @@ export const validatorUpdateProduct: RequestHandler[] = [
         .status(400)
         .send({ errors: results.array().map((error) => error.msg) });
     }
+    const data = matchedData(req);
+    req.data = data;
     next();
   },
 ];
@@ -176,6 +177,8 @@ export const validatorTargetedUpdate: RequestHandler[] = [
         .status(400)
         .send({ errors: results.array().map((error) => error.msg) });
     }
+    const data = matchedData(req);
+    req.data = data;
     next();
   },
 ];

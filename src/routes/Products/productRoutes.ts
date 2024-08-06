@@ -1,5 +1,5 @@
 import express from "express";
-import { idParser, updateProductContent, validatorCreateProduct, validatorTargetedUpdate, validatorUpdateProduct } from '../../middleware/Products/resolveProducts';
+import { idParser, newProduct, updateProductContent, validatorCreateProduct, validatorTargetedUpdate, validatorUpdateProduct } from '../../middleware/Products/resolveProducts';
 import {
   getProducts,
   getProduct,
@@ -33,7 +33,7 @@ router.get(
 );
 
 // Create a new product
-router.post("/api/products", validatorCreateProduct, createProduct);
+router.post("/api/products", validatorCreateProduct, newProduct, createProduct);
 
 // Update a product
 router.put("/api/products/update/:id",validatorUpdateProduct, idParser, makeAnUpdate, updateProduct);  
