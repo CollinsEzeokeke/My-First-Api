@@ -1,11 +1,13 @@
-import express, { Request, Response } from "express";
-import { idParser } from '../../middleware/Products/resolveProducts';
+import express from "express";
+import { idParser, updateProductContent, validatorCreateProduct, validatorTargetedUpdate, validatorUpdateProduct } from '../../middleware/Products/resolveProducts';
 import {
   getProducts,
   getProduct,
   getProductsByQuery,
   createProduct,
   updateProduct,
+  deleteProduct,
+  targetedUpdateProduct,
 } from "../../controllers/products/productsController";
 import {
   getProductById,
@@ -31,9 +33,15 @@ router.get(
 );
 
 // Create a new product
-router.post("/api/products", createProduct);
+router.post("/api/products", validatorCreateProduct, createProduct);
 
 // Update a product
-router.put("/api/products/update/:id", idParser, makeAnUpdate, updateProduct);  
+router.put("/api/products/update/:id",validatorUpdateProduct, idParser, makeAnUpdate, updateProduct);  
+
+// Update certain fields of a product
+router.patch("/api/products/update/:id",validatorTargetedUpdate, idParser, updateProductContent, targetedUpdateProduct);
+
+// Delete a product
+router.delete("/api/products/delete/:id", idParser, deleteProduct);
 
 export default router;

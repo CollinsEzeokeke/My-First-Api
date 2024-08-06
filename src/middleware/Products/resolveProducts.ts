@@ -1,10 +1,19 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { mockProducts } from "../../data/Products/mockProducts";
 import { checkSchema, validationResult } from "express-validator";
-import { queryValidationSchema } from "../../utils/productFieldValidation/validationSchema";
+import {
+  createProductValidationSchema,
+  productBodyValidationSchema,
+  queryValidationSchema,
+  targetedUpdateProductValidationSchema,
+} from "../../utils/productFieldValidation/validationSchema";
 import Product from "../../interfaces/Products/Products";
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Middleware made to resolve all the products according to what is needed at the time
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // getting the products by id
 export const getProductById = (
@@ -56,18 +65,110 @@ export const makeAnUpdate = (
   next: NextFunction
 ) => {
   const product = req.product as Product;
-  console.log(typeof(product));
+  const newProduct = req.body as Product;
+  console.log(newProduct, product);
   if (!product) {
-    res.json({"message": "No product found with that id"}).status(404);
+    res.json({ message: "No product found with that id" }).status(404);
   }
-  mockProducts.push(product);
-  req.product = product;
+  mockProducts.push(newProduct);
+  req.product = newProduct;
   next();
 };
+
+// updating certain fields of the product for patch request
+export const updateProductContent = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const product = req.product as Product;
+  const newProduct = req.body as Product;
+  console.log(newProduct, product);
+  if (!product) {
+    res.json({ message: "No product found with that id" }).status(404);
+  }
+  mockProducts.push(newProduct);
+  req.product = newProduct;
+  next();
+};
+
+// resolving the created products
+export const createProduct = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { name, category, price, description, image } = req.body;
+if (!name || !category || !price || !description || !image) {
+  res.json({ message: "Please provide all the required fields" }).status(400);
+}
+const variable = req.data;
+const newProduct = { id: mockProducts[mockProducts.length - 1].id + 1, ...variable };
+mockProducts.push(newProduct);
+req.product = newProduct;
+next();
+};
+
+// resolving the deleted products
+export const deleteProduct = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// All the middlewares for validations
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // Validator for the query parameters
 export const validatorQuery: RequestHandler[] = [
   ...checkSchema(queryValidationSchema),
+  (req: Request, res: Response, next: NextFunction) => {
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+      return res
+        .status(400)
+        .send({ errors: results.array().map((error) => error.msg) });
+    }
+    next();
+  },
+];
+
+// Validator for the creation of a product
+export const validatorCreateProduct: RequestHandler[] = [
+  ...checkSchema(createProductValidationSchema),
+  (req: Request, res: Response, next: NextFunction) => {
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+      return res
+        .status(400)
+        .send({ errors: results.array().map((error) => error.msg) });
+    }
+    next();
+  },
+];
+
+//validator for the update of a product
+export const validatorUpdateProduct: RequestHandler[] = [
+  ...checkSchema(productBodyValidationSchema),
+  (req: Request, res: Response, next: NextFunction) => {
+    const results = validationResult(req);
+    if (!results.isEmpty()) {
+      return res
+        .status(400)
+        .send({ errors: results.array().map((error) => error.msg) });
+    }
+    next();
+  },
+];
+
+// validator for the update of specific fields of a product
+export const validatorTargetedUpdate: RequestHandler[] = [
+  ...checkSchema(targetedUpdateProductValidationSchema),
   (req: Request, res: Response, next: NextFunction) => {
     const results = validationResult(req);
     if (!results.isEmpty()) {

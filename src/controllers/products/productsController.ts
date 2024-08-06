@@ -51,3 +51,21 @@ export const updateProduct =  (req: Request, res: Response) => {
         res.json(req.product).status(200);
     }
 }
+
+//@desc update certain fields of a product
+//@route PATCH /products/update/:id
+//@access Public
+export const targetedUpdateProduct =  (req: Request, res: Response) => {
+    if (req.product) {
+        res.json(req.product).status(200);
+    }
+}
+
+//@desc delete a product
+//@route DELETE /products/:id
+//@access Public
+export const deleteProduct =  (req: Request, res: Response) => {
+    if (req.product) {
+        res.json(req.product).status(200);
+    }
+}
