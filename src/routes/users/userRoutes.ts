@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import {
   getHome,
+  getAll,
   getUserById,
   deleteUser,
   updateUser,
@@ -23,15 +24,22 @@ const router = express.Router();
 // @access Public
 router.get("/", getHome);
 
+
+// @desc Get all users
+// @route GET /api/users
+// @access Public
+router.get('/api/users', getAll);
+
 // @desc Get a user by id
 // @route GET /api/users/:id
 // @access Public
-router.get("/api/users/:id", validatorId, UsersResolvedById, getUserById);
+router.get("/api/users/findById/:id", validatorId, UsersResolvedById, getUserById);
+
 
 // @desc searching for a user with a specific filter and value
-// @route GET /api/users
+// @route GET /api/users/search
 // @access Public
-router.get("/api/users", validator, UsersResolvedByFilterQuery, searchUser);
+router.get("/api/users/search", validator, UsersResolvedByFilterQuery, searchUser);
 
 // @desc create a new user
 // @route POST /api/users

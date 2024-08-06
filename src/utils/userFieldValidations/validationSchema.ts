@@ -1,6 +1,7 @@
 // validationSchema.ts
 import { Schema } from 'express-validator';
 
+// Validation for the created user
 export const validationSchema: Schema = {
   username: {
     in: ['body'],
@@ -10,7 +11,7 @@ export const validationSchema: Schema = {
     },
     isLength: {
       options: {
-        min: 6,
+        min: 3,
         max: 20,
       },
       errorMessage: "Username must be between 6 and 20 characters",
@@ -24,7 +25,7 @@ export const validationSchema: Schema = {
     },
     isLength: {
       options: {
-        min: 6,
+        min: 3,
         max: 35,
       },
       errorMessage: "Display name must be between 6 and 35 characters",
@@ -41,7 +42,7 @@ export const validationSchemaQuery: Schema = {
     optional: true,
     isLength: {
       options: {
-        min: 6,
+        min: 3,
         max: 20,
       },
       errorMessage: "Username must be between 6 and 20 characters",
@@ -53,7 +54,7 @@ export const validationSchemaQuery: Schema = {
     optional: true,
     isLength: {
       options: {
-        min: 6,
+        min: 3,
         max: 35,
       },
       errorMessage: "Display name must be between 6 and 35 characters",

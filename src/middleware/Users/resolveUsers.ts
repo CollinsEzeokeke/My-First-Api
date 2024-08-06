@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { mockUsers } from "../../data/Users/mockUsers";
 import {
-  query,
   validationResult,
   matchedData,
   checkSchema,
@@ -35,8 +34,10 @@ export const UsersResolvedByFilterQuery = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) => { 
   const { username, displayName } = req.query;
+
+  console.log(username, displayName);
 
   if (username || displayName) {
     req.user = mockUsers.filter(
@@ -64,7 +65,7 @@ export const validatorId: RequestHandler[] = [
     }
     next();
   },
-];
+]; 
 
 // Validation for the query parameters
 export const validator: RequestHandler[] = [
@@ -72,6 +73,11 @@ export const validator: RequestHandler[] = [
 
   (req: Request, res: Response, next: NextFunction) => {
     const results = validationResult(req);
+    if (!results.isEmpty()) {
+      return res
+        .status(400)
+        .send({ errors: results.array().map((error) => error.msg) });
+    }
     console.log(results);
     next();
   },
@@ -89,7 +95,7 @@ export const validatorCreate: RequestHandler[] = [
         .send({ errors: results.array().map((error) => error.msg) });
     }
     const data = matchedData(req);
-    (req as any).data = data; // Casting to any to avoid TypeScript error
+    req.data = data;
     next();
   },
 ];
@@ -123,7 +129,7 @@ export const validatorUpdateOptional: RequestHandler[] = [
         .send({ errors: results.array().map((error) => error.msg) });
     }
     const data = matchedData(req);
-    (req as any).data = data; // Casting to any to avoid TypeScript error
+    req.data = data;
     next();
   },
 ];

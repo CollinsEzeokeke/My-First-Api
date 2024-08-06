@@ -1,4 +1,5 @@
 import User from "../interfaces/User/User";
+import Product from "../interfaces/Products/Products";
 import { ValidationError, Location } from "express-validator";
 
 declare global {
@@ -6,6 +7,7 @@ declare global {
     interface Request {
       data?: any;
       user?: User | User[];
+      product?: Product | Product[];
       "express-validator#contexts"?: Array<{
         location: Location;
         path: string;

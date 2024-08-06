@@ -12,7 +12,7 @@ export function getHome(req: Request, res: Response) {
 // @desc Get all users
 // @route GET /api/users
 // @access Public
-export function getAll(req: Request, res: Response) {
+export function getAll(req: Request, res: Response) { 
   res.json(mockUsers);
 }
 
@@ -28,10 +28,11 @@ export function getUserById(req: Request, res: Response, next: NextFunction) {
 }
 
 //@desc searching for a user with a specific filter and value
-//@route GET /api/users
+//@route GET /api/users/search
 //@access Public
 export function searchUser(req: Request, res: Response) {
   const user = req.user;
+  console.log(user);
   res.json(user);
 }
 
