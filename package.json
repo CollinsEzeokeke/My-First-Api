@@ -1,5 +1,5 @@
 {
-  "name": "Api",
+  "name": "my-first-api",
   "version": "1.0.0",
   "description": "My API Project linked to a mongodb database",
   "main": "index.js",
