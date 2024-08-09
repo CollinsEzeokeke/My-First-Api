@@ -17,5 +17,11 @@ declare global {
         msg: any;
       }>;
     }
+    // Types for the error object
+interface CustomError extends Error {
+  status? : number;
+  message: string;
+  errors?: ValidationError[];
+}
   }
 }

@@ -66,6 +66,8 @@ export const targetedUpdateProduct =  (req: Request, res: Response) => {
 //@access Public
 export const deleteProduct =  (req: Request, res: Response) => {
     if (req.product) {
-        res.json(req.product).status(200);
+        return res
+        .json(req.product)
+        .status(200);
     }
 }

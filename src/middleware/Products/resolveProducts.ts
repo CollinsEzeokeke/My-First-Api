@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { mockProducts } from "../../data/Products/mockProducts";
+import { mockProducts } from '../../data/Products/mockProducts';
 import { checkSchema, matchedData, validationResult } from "express-validator";
 import {
   createProductValidationSchema,
@@ -39,17 +39,16 @@ export const filterByQuery = (
   res: Response,
   next: NextFunction
 ) => {
-  const { category, name } = req.query;
-  if (category || name) {
-    console.log(category, name);
-    req.product = mockProducts.filter(
-      (product) =>
-        (category && product.category === category) ||
-        (name && product.name === name)
+  const data = req.data;
+  if ( data.name || data.price || data.category ) {
+    req.product = mockProducts.filter(product =>
+      (data.name && product.name === data.name) ||
+      (data.price && product.price === data.price) ||
+      (data.category && product.category === data.category)
     );
   }
   next();
-};
+  };
 
 // Id parser
 export const idParser = (req: Request, res: Response, next: NextFunction) => {
@@ -98,11 +97,21 @@ export const updateProductContent = (
   if (!product) {
     res.json({ message: "No product found with that id" }).status(404);
   }else{
-    product.name = req.data.name;
-    product.price = req.body.price;
-    product.description = req.body.description;
-    product.category = req.body.category;
-    product.image = req.body.image;
+    if (data.name) {
+      product.name = data.name;
+    }
+    if (data.price) {
+      product.price = data.price;
+    }
+    if (data.description) {
+      product.description = data.description;
+    }
+    if (data.category) {
+      product.category = data.category;
+    }
+    if (data.image) {
+      product.image = data.image;
+    }
     req.product = product;
     next();
   }
@@ -127,11 +136,26 @@ next();
 };
 
 // resolving the deleted products
-export const deleteProduct = (
+export const deleteProductResolver = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  const product = req.product as Product;
+  if (!product) {
+    res.send({ message : "No product like that exists" }).status(404);
+  }
+  const mockProductsIndex = mockProducts.findIndex((products) => products.id === product.id);
+  if (mockProductsIndex === -1) {
+    res.send({ message : "No product like that exists" }).status(404);
+  }
+  else {
+    mockProducts.splice(mockProductsIndex, product.id);
+    req.product = mockProducts[mockProductsIndex];
+  }
+
+  next();
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +175,8 @@ export const validatorQuery: RequestHandler[] = [
         .status(400)
         .send({ errors: results.array().map((error) => error.msg) });
     }
+    const data = matchedData(req);
+    req.data = data;
     next();
   },
 ];

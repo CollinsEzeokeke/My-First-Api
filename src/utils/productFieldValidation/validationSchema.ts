@@ -26,6 +26,12 @@ export const queryValidationSchema: Schema = {
       errorMessage: "Name must be between 6 and 35 characters",
     },
   },
+  price: {
+    in: ["query"],
+    isFloat: true,
+    isNumeric: true,
+    optional: true,
+  },
 };
 
 // validation for the product body for update

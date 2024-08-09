@@ -4,7 +4,3 @@ export default interface User {
   username: string;
   displayName: string;
 }
-// Types for the error object
-export interface CustomError extends Error {
-  status? : number;
-}
