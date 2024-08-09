@@ -22,7 +22,7 @@ const router = express.Router();
 router.get("/api/products", getProducts);
 
 // get a single product by id
-router.get("/api/products/findById/:id", getProductById, getProduct);
+router.get("/api/products/:id", getProductById, getProduct);
 
 // get a product by the query parameter
 router.get(
@@ -36,7 +36,7 @@ router.get(
 router.post("/api/products", validatorCreateProduct, newProduct, createProduct);
 
 // Update a product
-router.put("/api/products/update/:id",validatorUpdateProduct, idParser, makeAnUpdate, updateProduct);  
+router.put("/api/products/:id",validatorUpdateProduct, idParser, makeAnUpdate, updateProduct);
 
 // Update certain fields of a product
 router.patch("/api/products/update/:id",validatorTargetedUpdate, idParser, updateProductContent, targetedUpdateProduct);

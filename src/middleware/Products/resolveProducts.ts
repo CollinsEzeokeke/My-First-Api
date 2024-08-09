@@ -54,7 +54,14 @@ export const filterByQuery = (
 // Id parser
 export const idParser = (req: Request, res: Response, next: NextFunction) => {
   const parsedId = parseInt(req.params.id);
-  req.product = mockProducts.find((product) => product.id === parsedId);
+  const product = mockProducts.find((product) => product.id === parsedId);
+  if (!product) {
+    res.status(404).json({
+      message: `No product found with id ${parsedId}`,
+    });
+    return;
+  }
+  req.product = product;
   next();
 };
 
@@ -65,11 +72,16 @@ export const makeAnUpdate = (
   next: NextFunction
 ) => {
   const product = req.product as Product;
-  if (!product) {
-    res.json({ message: "No product found with that id" }).status(404);
+  const productIndex = mockProducts.findIndex((products) => products.id === product.id);
+  if (productIndex === -1) {
+    res.send({ message : "No product like that exists" }).status(404);
+    return;
   }
-  mockProducts.push(req.data);
-  req.product = req.data;
+  else {
+    const updatedProduct = {...mockProducts[productIndex], ...req.data};
+    mockProducts[productIndex] = updatedProduct;
+    req.product = updatedProduct;
+  }
   next();
 };
 
@@ -80,13 +92,21 @@ export const updateProductContent = (
   next: NextFunction
 ) => {
   const product = req.product as Product;
-  console.log(newProduct, product);
+  console.log(product);
+  const data = req.data;
+  
   if (!product) {
     res.json({ message: "No product found with that id" }).status(404);
+  }else{
+    product.name = req.data.name;
+    product.price = req.body.price;
+    product.description = req.body.description;
+    product.category = req.body.category;
+    product.image = req.body.image;
+    req.product = product;
+    next();
   }
-  mockProducts.push(req.data);
-  req.product = req.data;
-  next();
+  
 };
 
 // resolving the created products
@@ -182,3 +202,6 @@ export const validatorTargetedUpdate: RequestHandler[] = [
     next();
   },
 ];
+
+// Validator for the idParser
+ 

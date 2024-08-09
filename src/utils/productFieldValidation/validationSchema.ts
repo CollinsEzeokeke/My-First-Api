@@ -63,6 +63,19 @@ export const productBodyValidationSchema: Schema = {
       errorMessage: "Description must be between 3 and 100 characters",
     },
   },
+  category: {
+    in: ["body"],
+    isString: true,
+    optional: false,
+    errorMessage: "Category of your product is required",
+    isLength: {
+      options: {
+        min: 3,
+        max: 120,
+      },
+      errorMessage: "Category must be between 6 and 35 characters",
+    },
+  },
   image: {
     in: ["body"],
     isString: true,
