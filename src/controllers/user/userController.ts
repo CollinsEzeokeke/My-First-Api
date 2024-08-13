@@ -2,13 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { mockUsers } from "../../data/Users/mockUsers";
 import User from "../../interfaces/User/User";
 
-// @desc Get Homepage
-// @route GET /
-// @access Public
-export function getHome(req: Request, res: Response) {
-  res.send("Welcome to the homepage");
-}
-
 // @desc Get all users
 // @route GET /api/users
 // @access Public

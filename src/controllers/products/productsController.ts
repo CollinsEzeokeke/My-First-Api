@@ -5,6 +5,8 @@ import { mockProducts } from '../../data/Products/mockProducts';
 // @route GET /products
 // @access Public
 export const getProducts =  (req: Request, res: Response) => {
+    console.log(req.headers.cookie)
+    console.log(req.cookies)
     res.status(200).json(mockProducts);
 }
 

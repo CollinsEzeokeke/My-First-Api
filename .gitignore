@@ -1,9 +1,5 @@
-#Ignore node_modules folder
-node_modules/
-#Ignore the pnpm-lock.yaml file
-pnpm-lock.yaml,
-#Ignore the tsconfig.json file
-tsconfig.json,
-#Ignore .pnpm located within the node_modules folder
-.pnpm/
 node_modules
+package-lock.json
+.vscode
+pnpm-lock.yaml
+.idx

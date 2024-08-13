@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import {
-  getHome,
   getAll,
   getUserById,
   deleteUser,
@@ -18,12 +17,6 @@ import {
 } from "../../middleware/Users/resolveUsers";
 
 const router = express.Router();
-
-// @desc Get Homepage
-// @route GET /
-// @access Public
-router.get("/", getHome);
-
 
 // @desc Get all users
 // @route GET /api/users
