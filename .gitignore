@@ -6,3 +6,4 @@ pnpm-lock.yaml,
 tsconfig.json,
 #Ignore .pnpm located within the node_modules folder
 .pnpm/
+node_modules
