@@ -19,7 +19,7 @@ import {
 const router = express.Router();
 
 // get all products
-router.get("/api/products", getProducts);
+router.get("/api/products", getProducts); 
 
 // get a product by the query parameter
 router.get("/api/product", validatorQuery, filterByQuery, getProductsByQuery);

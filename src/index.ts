@@ -3,13 +3,22 @@ import { error } from "./middleware/primaryMiddleWare/error";
 import loggerWare from "./middleware/primaryMiddleWare/loggerWare";
 import alphaRoute from "./routes/Alpha/indexrouter";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import { mockUsers } from "./data/Users/mockUsers";
 
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser("secret"));
 // Setting up a logger
 app.use(loggerWare);
+// Setting up a session
+app.use(session({
+  secret: "secret",
+  saveUninitialized: false,
+  resave: false,
+  cookie: { maxAge: 60000 * 360 * 3 }
+}))
 // setting the app to use the routes from the Alpha route folder
 app.use(alphaRoute)
 // setting up the error middleware
@@ -25,6 +34,25 @@ app.listen(port, () => {
 });
 
 app.get("/", ( req, res ) => {
-  res.cookie("hello", "world" , { maxAge: 60000 * 360 * 3 });
+  console.log(req.session)
+  console.log(req.session.id)
+  req.session.visited = true;
+  res.cookie("hello", "world" , { maxAge: 60000 * 360 * 3 , signed: true });
   res.send({msg: "I am a cookie and I was recently logged"})
+})
+
+app.post("/api/auth", (req, res) => {
+  const { body: { username, password } } = req;
+
+  const findUser = mockUsers.find((user) => user.username === username);
+  
+  if(!findUser || findUser.password !== password) return res.status(401).send({ msg: "BAD CREDENTIALS" });
+
+  req.session.user = findUser;
+
+  return res.status(200).send(findUser);
+})
+
+app.get("/api/auth/status", (req,res) => {
+  return req.session.user ? res.send({ msg: "req.session.user"}).status(200) : res.send({ msg: "Not Authenticated" }).status(200)
 })

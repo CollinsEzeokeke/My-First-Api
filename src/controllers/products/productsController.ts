@@ -5,15 +5,23 @@ import { mockProducts } from '../../data/Products/mockProducts';
 // @route GET /products
 // @access Public
 export const getProducts =  (req: Request, res: Response) => {
-    console.log(req.headers.cookie)
-    console.log(req.cookies)
-    res.status(200).json(mockProducts);
+    console.log(req.signedCookies.hello)
+    if (req.signedCookies.hello === "world" )
+    return res.status(200).json(mockProducts);
+
+    return res.send({msg: "you need to have the correct cookie value to continue this page!!" })
 }
 
 // @desc get a single product
 // @route GET /products/:id
 // @access Public
 export const getProduct =  (req: Request, res: Response) => {
+    console.log(req.session.id)
+    req.sessionStore.get(req.session.id, (err, sessionData) => {
+        if(err) throw err;
+
+        return console.log(sessionData);
+    });
     if (req.product) {
         res.status(200).json(req.product);
     } else {

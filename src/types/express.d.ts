@@ -25,3 +25,10 @@ interface CustomError extends Error {
 }
   }
 }
+
+declare module "express-session" {
+  interface SessionData {
+    visited?: boolean;
+    user?: User | User[];
+  }
+}
