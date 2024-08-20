@@ -7,6 +7,7 @@ declare global {
     interface Request {
       data?: any;
       user?: User | User[];
+      message?: string;
       product?: Product | Product[];
       "express-validator#contexts"?: Array<{
         location: Location;
@@ -30,5 +31,6 @@ declare module "express-session" {
   interface SessionData {
     visited?: boolean;
     user?: User | User[];
+    displayName? : User["displayName"];
   }
 }

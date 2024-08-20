@@ -89,3 +89,21 @@ export function deleteUser(req: Request, res: Response) {
     res.json(deleteMockuser);
   }
 }
+
+export function login (req: Request, res: Response) {
+  const user = req.user as User;
+  if (!user) {
+    res.status(404).send("User not found");
+  } else {
+    res.json(user)
+  }
+}
+
+export function responses (req: Request, res: Response) {
+  const message = req.message;
+  if (!message) {
+    res.status(404).send("User not found");
+  } else {
+    res.json(message)
+  }
+}

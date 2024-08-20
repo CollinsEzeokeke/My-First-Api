@@ -31,6 +31,28 @@ export const validationSchema: Schema = {
       errorMessage: "Display name must be between 6 and 35 characters",
     },
   },
+  password: {
+    in: ['body'],
+    isString: true,
+    isStrongPassword: true,
+    notEmpty: {
+      errorMessage: "Password should not be left empty",
+    },
+    isLength: {
+      options: {
+        min: 6,
+        max: 20,
+      },
+      errorMessage: "Password must be between 6 and 20 characters",
+    },
+  },
+  email: {
+    in: ['body'],
+    isEmail: true,
+    notEmpty: {
+      errorMessage: "Email should not be left empty",
+    },
+  },
 };
 
 
@@ -141,3 +163,35 @@ export const validationSchemaUpdateOptional: Schema = {
     },
   },
 }
+
+// Validation for the login parameters
+export const validatiorLoginSchema: Schema = {
+  username: {
+    in: ['body'],
+    isString: true,
+    notEmpty: {
+      errorMessage: "Username should not be left empty",
+    },
+    isLength: {
+      options: {
+        min: 3,
+        max: 20,
+      },
+      errorMessage: "Username must be between 6 and 20 characters",
+    },
+  },
+  password: {
+    in: ['body'],
+    isString: true,
+    notEmpty: {
+      errorMessage: "Password should not be left empty",
+    },
+    isLength: {
+      options: {
+        min: 6,
+        max: 20,
+      },
+      errorMessage: "Password must be between 6 and 20 characters",
+    },
+  }
+};

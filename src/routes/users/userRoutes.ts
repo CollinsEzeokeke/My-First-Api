@@ -7,13 +7,15 @@ import {
   createUser,
   searchUser,
   updateUserByField,
+  responses,
+  login
 } from "../../controllers/user/userController";
 import {
   UsersResolvedById,
   UsersResolvedByFilterQuery,
   validator,
   validatorCreate,
-  validatorId,validatorUpdate,validatorUpdateOptional
+  validatorId,validatorUpdate,validatorUpdateOptional,validatorLogin,authenticateUser,userPosition
 } from "../../middleware/Users/resolveUsers";
 
 const router = express.Router();
@@ -53,6 +55,16 @@ router.patch("/api/users/:id",validatorUpdateOptional,UsersResolvedById, updateU
 // @route DELETE /api/users/:id
 // @access Public
 router.delete("/api/users/:id", UsersResolvedById, deleteUser);
+
+// @desc Basic authentication of users in the database
+// @route POST /api/auth/login
+// @access Public
+router.post("/api/auth/login", validatorLogin, authenticateUser, login);
+
+// @desc Authentication status
+// @route GET /api/auth/status
+// @access Public
+router.get("/api/auth/status", userPosition, responses);
 
 
 export default router;

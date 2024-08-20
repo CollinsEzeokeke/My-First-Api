@@ -12,6 +12,7 @@ import {
   validationSchemaId,
   validationSchemaUpdate,
   validationSchemaUpdateOptional,
+  validatiorLoginSchema
 } from "../../utils/userFieldValidations/validationSchema";
 
 // Middleware to resolve users by ID
@@ -51,6 +52,40 @@ export const UsersResolvedByFilterQuery = (
 
   next();
 };
+
+// Middleware to authenticate the users logins
+export const authenticateUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { data: { username, password } } = req;
+  
+    const findUser = mockUsers.find((user) => user.username === username);
+    const getDisplayName = findUser?.displayName;
+  
+    req.session.user = findUser;
+    req.session.displayName = getDisplayName;
+
+    if(!findUser || findUser.password !== password){
+      res.send({ msg: "Invalid username or password" }).status(401);
+    }
+    else {
+     req.user = findUser; 
+    }
+    
+    next();
+  }
+
+  // Middoleware to get the user authentication status
+  export const userPosition = (req: Request, res: Response, next: NextFunction) => {
+    if (req.session.user) {
+      req.message = "Authenticated user " + req.session.displayName;
+    } else {
+      req.message = "Not Authenticated";
+    }
+    next();
+  }
 
 //Validation for the id parameter
 export const validatorId: RequestHandler[] = [
@@ -120,6 +155,23 @@ export const validatorUpdate: RequestHandler[] = [
 // Validation for optional update parameters
 export const validatorUpdateOptional: RequestHandler[] = [
   ...checkSchema(validationSchemaUpdateOptional),
+  (req: Request, res: Response, next: NextFunction) => {
+    const results = validationResult(req);
+    console.log(results);
+    if (!results.isEmpty()) {
+      return res
+        .status(400)
+        .send({ errors: results.array().map((error) => error.msg) });
+    }
+    const data = matchedData(req);
+    req.data = data;
+    next();
+  },
+];
+
+// Validation for the login parameters
+export const validatorLogin: RequestHandler[] = [
+  ...checkSchema(validatiorLoginSchema),
   (req: Request, res: Response, next: NextFunction) => {
     const results = validationResult(req);
     console.log(results);

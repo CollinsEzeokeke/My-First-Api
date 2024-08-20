@@ -40,19 +40,3 @@ app.get("/", ( req, res ) => {
   res.cookie("hello", "world" , { maxAge: 60000 * 360 * 3 , signed: true });
   res.send({msg: "I am a cookie and I was recently logged"})
 })
-
-app.post("/api/auth", (req, res) => {
-  const { body: { username, password } } = req;
-
-  const findUser = mockUsers.find((user) => user.username === username);
-  
-  if(!findUser || findUser.password !== password) return res.status(401).send({ msg: "BAD CREDENTIALS" });
-
-  req.session.user = findUser;
-
-  return res.status(200).send(findUser);
-})
-
-app.get("/api/auth/status", (req,res) => {
-  return req.session.user ? res.send({ msg: "req.session.user"}).status(200) : res.send({ msg: "Not Authenticated" }).status(200)
-})
